@@ -1,0 +1,51 @@
+{
+ "name": "@metamask/vault-decryptor",
+ "version": "1.0.0",
+ "private": true,
+ "description": "Utility for decrypting MetaMask vault data",
+ "type": "module",
+ "scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+  "preview": "vite preview"
+ },
+ "dependencies": {
+  "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+  "@metamask/browser-passworder": "^4.1.0",
+  "@reduxjs/toolkit": "^1.9.5",
+  "ethereumjs-util": "^7.1.5",
+  "react": "^18.2.0",
+  "react-dom": "^18.2.0",
+  "react-redux": "^8.0.7",
+  "redux": "^4.2.1",
+  "redux-logger": "^3.0.6",
+  "redux-thunk": "^2.4.2",
+  "xtend": "^4.0.2",
+  "buffer": "^6.0.3",
+  "process": "^0.11.10",
+  "stream-browserify": "^3.0.0",
+  "react-app-rewired": "^2.2.1"
+ },
+ "devDependencies": {
+  "@types/react": "^18.0.37",
+  "@types/react-dom": "^18.0.11",
+  "@vitejs/plugin-react": "^4.0.0",
+  "eslint": "^8.38.0",
+  "eslint-plugin-react": "^7.32.2",
+  "eslint-plugin-react-hooks": "^4.6.0",
+  "eslint-plugin-react-refresh": "^0.3.4",
+  "vite": "^4.3.9"
+ },
+ "repository": {
+  "type": "git",
+  "url": "https://github.com/MetaMask/vault-decryptor.git"
+ },
+ "bugs": {
+  "url": "https://github.com/MetaMask/vault-decryptor/issues"
+ },
+ "homepage": "https://github.com/MetaMask/vault-decryptor#readme",
+ "engines": {
+  "node": ">=18.0.0"
+ }
+}
