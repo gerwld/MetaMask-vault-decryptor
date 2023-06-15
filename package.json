@@ -1,7 +1,7 @@
 {
  "name": "@metamask/vault-decryptor",
  "version": "1.0.0",
- "homepage": "https://gerwld.github.io/MetaMask-vault-decryptor/",
+ "homepage": "https://gerwld.github.io/MetaMask-vault-decryptor",
  "private": true,
  "description": "Utility for decrypting MetaMask vault data",
  "type": "module",

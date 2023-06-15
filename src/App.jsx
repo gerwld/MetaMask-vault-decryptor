@@ -1,40 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { decryptVault, extractVaultFromFile, isVaultValid } from './lib.js';
+import usePrevious from './hooks/usePrevious';
 
-function AppRoot({ view, nonce }) {
- const [vaultData, setVaultData] = useState('');
- const [password, setPassword] = useState('');
- const [error, setError] = useState(null);
- const [decrypted, setDecrypted] = useState(null);
- const [vaultSource, setVaultSource] = useState('text');
- const [fileValidation, setFileValidation] = useState(null);
+function AppRoot() {
+ const textareaRef = useRef();
+ const [formData, setFormData] = useState({
+  vaultData: '',
+  password: '',
+  error: null,
+  decrypted: null,
+  vaultSource: 'text',
+  fileValidation: null,
+ });
+
+ const { vaultData, password, error, decrypted, vaultSource, fileValidation } = formData;
+ const previousVault = usePrevious(vaultSource);
 
  const handleFileInputChange = async (event) => {
   try {
    if (!event.target.files.length) {
-    setFileValidation(null);
+    setFormData({ ...formData, fileValidation: null });
     return;
    }
    const file = event.target.files[0];
    const data = await file.text();
    let vaultData = extractVaultFromFile(data);
    if (!vaultData || !isVaultValid(vaultData)) {
-    setFileValidation('fail');
-    setVaultData(null);
+    setFormData({ ...formData, fileValidation: 'fail', vaultData: null });
     return;
    }
-   setFileValidation('pass');
+   setFormData({ ...formData, fileValidation: 'pass' });
    if (vaultData.data && vaultData.data.mnemonic) {
-    setDecrypted(vaultData);
+    setFormData({ ...formData, decrypted: vaultData });
     return;
    }
-   setVaultData(vaultData);
+   setFormData({ ...formData, vaultData });
   } catch (err) {
-   setFileValidation('fail');
-   setVaultData(null);
+   setFormData({ ...formData, fileValidation: 'fail', vaultData: null });
    if (err.name === 'SyntaxError') {
-    // Invalid JSON
+    setFormData({ ...formData, error: 'Invalid File Content (SyntaxError)' });
    } else {
     console.error(err);
    }
@@ -46,21 +51,25 @@ function AppRoot({ view, nonce }) {
    const vaultData = JSON.parse(event.target.value);
    if (!isVaultValid(vaultData)) {
     console.error('Invalid input data');
+    setFormData({ ...formData, vaultData, error: 'Invalid input data' });
     return;
    }
-   setVaultData(vaultData);
+   setFormData({ ...formData, vaultData, error: null });
   } catch (err) {
-   if (err.name === 'SyntaxError') {
-    // Invalid JSON
+   if (err.name === 'SyntaxError' && event.target.value !== '') {
+    setFormData({ ...formData, error: 'Invalid Vault.' });
    } else {
-    console.error(err);
+    setFormData({ ...formData, error: '' });
+    if (err.message !== 'Unexpected end of JSON input') {
+     console.error(err.message);
+    }
    }
   }
  };
 
  const handlePasswordChange = (event) => {
   const password = event.target.value;
-  setPassword(password);
+  setFormData({ ...formData, password });
  };
 
  const handleDecrypt = (event) => {
@@ -68,22 +77,32 @@ function AppRoot({ view, nonce }) {
    return;
   }
 
-  setError(null);
+  setFormData({ ...formData, error: null });
   decryptVault(password, vaultData)
    .then((keyrings) => {
     const serializedKeyrings = JSON.stringify(keyrings);
     console.log('Decrypted!', serializedKeyrings);
-    setDecrypted(serializedKeyrings);
+    setFormData({ ...formData, decrypted: serializedKeyrings });
    })
    .catch((reason) => {
     if (reason.message === 'Incorrect password') {
-     setError(reason.message);
+     setFormData({ ...formData, error: reason.message });
      return;
     }
     console.error(reason);
-    setError('Problem decoding vault.');
+    setFormData({ ...formData, error: 'Problem decoding vault.' });
    });
  };
+
+ //Changes error on toggle
+ useEffect(() => {
+  if (previousVault !== vaultSource) {
+   setFormData({ ...formData, error: '' });
+  }
+  if (previousVault !== vaultSource && vaultSource === 'text') {
+   handleTextInputChange({ target: { value: textareaRef.current.value } });
+  }
+ }, [formData.vaultSource]);
 
  return (
   <div className='content'>
@@ -108,8 +127,7 @@ function AppRoot({ view, nonce }) {
          name='vault-source'
          type='radio'
          onChange={() => {
-          setVaultSource('file');
-          setVaultData(null);
+          setFormData({ ...formData, vaultSource: 'file', vaultData: null });
          }}
         />
         <label htmlFor='radio-fileinput'>Database backup</label>
@@ -141,9 +159,7 @@ function AppRoot({ view, nonce }) {
          name='vault-source'
          type='radio'
          onChange={() => {
-          setVaultSource('text');
-          setVaultData(null);
-          setFileValidation(null);
+          setFormData({ ...formData, vaultSource: 'text', vaultData: null, fileValidation: null });
          }}
          checked={vaultSource === 'text'}
         />
@@ -151,8 +167,9 @@ function AppRoot({ view, nonce }) {
        </td>
        <td>
         <textarea
+         ref={textareaRef}
          className='vault-data'
-         disabled={false}
+         disabled={vaultSource !== 'text'}
          id='textinput'
          style={{
           width: '50em',
@@ -171,7 +188,7 @@ function AppRoot({ view, nonce }) {
         <input
          className='password'
          id='passwordinput'
-         type='text'
+         type='password'
          placeholder='Password'
          onChange={handlePasswordChange}
         />

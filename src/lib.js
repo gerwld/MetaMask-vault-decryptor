@@ -109,4 +109,5 @@ function decryptVault(password, vault) {
   return keyringsWithDecodedMnemonic;
  });
 }
+
 export { decryptVault, extractVaultFromFile, isVaultValid };
