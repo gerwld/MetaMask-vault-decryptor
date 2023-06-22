@@ -9,7 +9,7 @@ A web UI for decrypting MetaMask local storage.
 
 1. Updated from React 4.2 to 18.2.0
 2. Switched from npm to pnpm
-3. Updated redux part
+3. Updated redux part 
 4. Added better error handling<br>
    ...etc
 
