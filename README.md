@@ -4,7 +4,7 @@ A web UI for decrypting MetaMask local storage.
 
 [Visit live page here](https://gerwld.github.io/MetaMask-vault-decryptor/)<br>
 [Original source](https://github.com/MetaMask/vault-decryptor)
-
+ 
 ## What changed:
 
 1. Updated from React 4.2 to 18.2.0
