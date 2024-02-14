@@ -18,10 +18,9 @@ A web UI for decrypting MetaMask local storage.
 ~~To run the vault decryptor locally, ensure both Beefy and Browserify are installed~~<br>
 Not required anymore
 
-## Reminder:
+## Important:
 
-This repo is not a original source. It's an update of old fork, maded "just for fun". Use it only if original not works in your browser or etc.
-Also keep in mind that using it offline & in incognito mode may be safer.
+This repository is not an original source. It's an update of an old fork, made "just for fun." Use it only if the original does not work in your browser or elsewhere. Also, keep in mind that using it offline & in incognito mode may be safer.
 
 ## To run:
 
